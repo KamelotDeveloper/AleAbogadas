@@ -1,0 +1,65 @@
+@import "tailwindcss";
+
+@theme {
+  --color-espresso: #2B2016;
+  --color-brownmid: #5C4433;
+  --color-camel: #8B6F52;
+  --color-taupe: #B5A697;
+  --color-cream: #F5EFE6;
+
+  --font-serif: "Playfair Display", serif;
+  --font-sans: "Inter", sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.snap-x-mandatory {
+  scroll-snap-type: x mandatory;
+}
+
+.snap-center {
+  scroll-snap-align: center;
+}
+
+.eyebrow {
+  letter-spacing: 0.14em;
+}
+
+.photo-1 {
+  background: linear-gradient(155deg, #6B5240 0%, #4A3527 55%, #2B2016 100%);
+}
+
+.photo-2 {
+  background: linear-gradient(160deg, #8B7660 0%, #5C4433 60%, #382A1E 100%);
+}
+
+.photo-3 {
+  background: linear-gradient(145deg, #A08865 0%, #6B5240 55%, #3A2C1F 100%);
+}
+
+/* Reveal on scroll — hidden only when JS is active; no-JS keeps content visible */
+.js .reveal {
+  opacity: 0;
+  transform: translateY(40px) scale(0.98);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+
+.js .reveal.in-view {
+  opacity: 1;
+  transform: none;
+}
+
+.js .reveal.d1 { transition-delay: 0.1s; }
+.js .reveal.d2 { transition-delay: 0.2s; }
+.js .reveal.d3 { transition-delay: 0.3s; }

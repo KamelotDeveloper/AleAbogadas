@@ -1,0 +1,373 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout>
+  <div class="max-w-md mx-auto relative lg:max-w-6xl lg:px-8">
+    <!-- NAVBAR -->
+    <header class="fixed top-0 left-0 right-0 z-40 max-w-md mx-auto lg:max-w-6xl lg:px-8">
+      <nav class="flex items-center justify-between px-5 py-3.5 bg-cream/90 backdrop-blur lg:px-8 lg:py-4">
+        <div class="flex items-center gap-2.5">
+          <img src="/logo.webp" alt="Ale Abogadas Efip" class="h-12 w-auto rounded-xl" />
+          <span class="font-serif italic font-semibold text-lg text-espresso">Ale Abogadas Efip</span>
+        </div>
+        <a
+          href="#precios"
+          class="bg-espresso text-cream text-xs eyebrow uppercase font-semibold px-4 py-2 rounded-full"
+          >Precios</a
+        >
+      </nav>
+    </header>
+
+    <!-- 1. HERO — mobile: foto con overlay / desktop: split 2 columnas (un solo h1) -->
+    <section class="pt-20 px-5 pb-8 lg:pt-28 lg:pb-12">
+      <div class="grid grid-cols-1 lg:grid-cols-2 lg:gap-12">
+        <!-- Foto de portada: <img src="..." alt="Clase de preparación EFIP — Abogacía UES21" loading="lazy" /> -->
+        <div
+          class="photo-1 rounded-2xl aspect-[4/5] overflow-hidden col-start-1 row-start-1 lg:col-start-2 lg:row-start-1 lg:aspect-auto"
+        ></div>
+
+        <!-- Texto (un solo h1): mobile superpuesto abajo de la foto; desktop columna izquierda -->
+        <div
+          class="col-start-1 row-start-1 flex flex-col justify-end p-6 lg:col-start-1 lg:row-start-1 lg:justify-center lg:p-0 reveal"
+        >
+          <p class="eyebrow uppercase text-cream/60 text-[11px] font-semibold mb-3 lg:text-camel">
+            Preparación EFIP · Abogacía UES21
+          </p>
+          <h1
+            class="font-serif text-cream text-[2.1rem] leading-[1.1] mb-2 lg:text-espresso lg:text-5xl"
+          >
+            Tu guía <span class="italic text-taupe">experta</span> para el examen final.
+          </h1>
+          <p class="text-cream/70 text-sm leading-relaxed lg:text-espresso/60 lg:text-base">
+            EFIP 1 y 2 · Escrito y oral
+          </p>
+
+          <!-- Párrafo + CTA (desktop) -->
+          <div class="hidden lg:block">
+            <p class="text-espresso/70 text-base leading-relaxed mb-8">
+              Método de estudio propio, clases con dinámica grupal, repaso completo de oralidad y
+              acompañamiento constante hasta el día del examen.
+            </p>
+            <a
+              href="https://wa.me/5493863507205?text=Hola,%20quisiera%20más%20información%20sobre%20las%20clases%20de%20EFIP."
+              class="inline-block bg-espresso hover:bg-brownmid transition-colors text-cream font-serif italic text-base px-10 py-3.5 rounded-full"
+              >Escribinos por WhatsApp</a
+            >
+          </div>
+        </div>
+      </div>
+
+      <!-- Párrafo + CTA (mobile) -->
+      <div class="lg:hidden mt-6">
+        <p class="text-espresso/70 text-sm leading-relaxed mb-6">
+          Método de estudio propio, clases con dinámica grupal, repaso completo de oralidad y
+          acompañamiento constante hasta el día del examen.
+        </p>
+        <a
+          href="https://wa.me/5493863507205?text=Hola,%20quisiera%20más%20información%20sobre%20las%20clases%20de%20EFIP."
+          class="block text-center bg-espresso hover:bg-brownmid transition-colors text-cream font-serif italic text-base py-3.5 rounded-full"
+          >Escribinos por WhatsApp</a
+        >
+      </div>
+    </section>
+
+    <!-- ACCESO RÁPIDO A PRECIOS -->
+    <section class="px-5 pb-2">
+      <div class="flex gap-3 overflow-x-auto no-scrollbar snap-x-mandatory pb-1 lg:grid lg:grid-cols-4 lg:gap-4 lg:overflow-visible reveal">
+        <a href="#precios" class="snap-center shrink-0 w-40 bg-espresso text-cream rounded-2xl p-4 lg:w-auto d1">
+          <p class="text-[11px] eyebrow uppercase text-cream/50 mb-1">EFIP 1</p>
+          <p class="font-serif italic text-xl">$330.000</p>
+        </a>
+        <a href="#precios" class="snap-center shrink-0 w-40 bg-brownmid text-cream rounded-2xl p-4 lg:w-auto">
+          <p class="text-[11px] eyebrow uppercase text-cream/60 mb-1">EFIP 2 · popular</p>
+          <p class="font-serif italic text-xl">$370.000</p>
+        </a>
+        <a href="#precios" class="snap-center shrink-0 w-40 bg-taupe/40 text-espresso rounded-2xl p-4 lg:w-auto">
+          <p class="text-[11px] eyebrow uppercase text-espresso/60 mb-1">Particulares</p>
+          <p class="font-serif italic text-xl">$35.000/h</p>
+        </a>
+        <a href="#precios" class="snap-center shrink-0 w-40 bg-cream ring-1 ring-espresso/15 text-espresso rounded-2xl p-4 lg:w-auto">
+          <p class="text-[11px] eyebrow uppercase text-espresso/60 mb-1">Grabadas</p>
+          <p class="font-serif italic text-xl">$150.000</p>
+        </a>
+      </div>
+    </section>
+
+    <!-- 2. METODOLOGÍA -->
+    <section class="px-5 py-10">
+      <h2 class="font-serif text-2xl mb-1">Nuestra <span class="italic text-camel">metodología</span></h2>
+      <p class="text-espresso/50 text-sm mb-7">Lo que hace que se apruebe en el primer intento.</p>
+      <!-- Mini-fotos ilustrativas: reemplazar cada .photo-* por <img ... loading="lazy" /> -->
+      <div class="space-y-6 lg:grid lg:grid-cols-2 lg:gap-x-8 lg:gap-y-10 lg:space-y-0 reveal">
+        <div class="flex gap-4 items-start reveal">
+          <div class="photo-2 w-16 h-16 rounded-xl shrink-0 flex items-center justify-center">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#E8D8C3" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="6" width="13" height="12" rx="2"></rect>
+              <path d="M15 10l5-3v10l-5-3"></path>
+            </svg>
+          </div>
+          <div>
+            <h3 class="font-serif text-base mb-1">Clases en vivo</h3>
+            <p class="text-sm text-espresso/60 leading-relaxed">Dudas resueltas en el momento, con dinámica grupal.</p>
+          </div>
+        </div>
+        <div class="flex gap-4 items-start reveal">
+          <div class="photo-3 w-16 h-16 rounded-xl shrink-0 flex items-center justify-center">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#E8D8C3" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="9" y="2" width="6" height="12" rx="3"></rect>
+              <path d="M5 10a7 7 0 0 0 14 0"></path>
+              <path d="M12 17v3"></path>
+              <path d="M8 21h8"></path>
+            </svg>
+          </div>
+          <div>
+            <h3 class="font-serif text-base mb-1">Simulacro de oral</h3>
+            <p class="text-sm text-espresso/60 leading-relaxed">
+              Practicás la instancia que más nervios genera, antes del día real.
+            </p>
+          </div>
+        </div>
+        <div class="flex gap-4 items-start reveal">
+          <div class="photo-1 w-16 h-16 rounded-xl shrink-0 flex items-center justify-center">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#E8D8C3" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+            </svg>
+          </div>
+          <div>
+            <h3 class="font-serif text-base mb-1">Soporte constante</h3>
+            <p class="text-sm text-espresso/60 leading-relaxed">Acompañamiento por WhatsApp hasta rendir.</p>
+          </div>
+        </div>
+        <div class="flex gap-4 items-start reveal">
+          <div class="photo-2 w-16 h-16 rounded-xl shrink-0 flex items-center justify-center">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#E8D8C3" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+              <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+            </svg>
+          </div>
+          <div>
+            <h3 class="font-serif text-base mb-1">Material exclusivo</h3>
+            <p class="text-sm text-espresso/60 leading-relaxed">
+              Resúmenes y bibliografía actualizada de la Siglo 21.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. PLANES Y PRECIOS -->
+    <section id="precios" class="bg-espresso text-cream px-5 py-10 reveal">
+      <h2 class="font-serif text-2xl mb-1">Planes y <span class="italic text-taupe">precios</span></h2>
+      <p class="text-cream/50 text-sm mb-5">Cupos limitados por grupo.</p>
+      <a
+        href="https://wa.me/5493863507205?text=Hola,%20tengo%20dudas%20sobre%20qué%20plan%20me%20conviene"
+        class="inline-block text-taupe underline decoration-taupe/40 underline-offset-4 text-sm mb-6"
+        >¿No sabés qué plan elegir? Escribinos</a
+      >
+
+      <div class="space-y-4 lg:grid lg:grid-cols-2 xl:grid-cols-4 lg:gap-6 lg:items-start lg:space-y-0">
+        <div class="bg-cream text-espresso rounded-2xl p-5 reveal d1">
+          <h3 class="font-serif text-lg mb-0.5">Curso <span class="italic">EFIP 1</span></h3>
+          <p class="text-xs text-espresso/50 mb-4">5 semanas de duración</p>
+          <div class="mb-4">
+            <span class="text-sm text-espresso/40 block">1 pago</span>
+            <span class="font-serif italic text-2xl block">$330.000</span>
+            <span class="text-xs text-camel">2 pagos de $350.000</span>
+          </div>
+          <ul class="text-sm text-espresso/70 space-y-2 mb-5">
+            <li class="flex gap-2"><span class="text-camel">✓</span>Material de estudio (bibliografía obligatoria)</li>
+            <li class="flex gap-2"><span class="text-camel">✓</span>Acompañamiento activo del alumno</li>
+            <li class="flex gap-2"><span class="text-camel">✓</span>Clase final de repaso con práctica de oratoria</li>
+          </ul>
+          <a
+            href="https://wa.me/5493863507205?text=Hola,%20quisiera%20contratar%20el%20curso%20de%20EFIP%201."
+            class="block text-center bg-espresso text-cream font-serif italic py-3 rounded-full text-sm"
+            >Contratar</a
+          >
+        </div>
+
+        <div class="bg-brownmid text-cream rounded-2xl p-5 relative lg:-mt-4 lg:ring-1 lg:ring-taupe/40 reveal d2">
+          <span
+            class="absolute -top-2.5 left-5 bg-taupe text-espresso text-xs eyebrow uppercase font-semibold px-3 py-1 rounded-full"
+            >Popular</span
+          >
+          <h3 class="font-serif text-lg mb-0.5 mt-1.5">Curso <span class="italic">EFIP 2</span></h3>
+          <p class="text-xs text-cream/50 mb-4">6 semanas de duración</p>
+          <div class="mb-4">
+            <span class="text-sm text-cream/40 block">1 pago</span>
+            <span class="font-serif italic text-2xl block">$370.000</span>
+            <span class="text-xs text-taupe">2 pagos de $390.000</span>
+          </div>
+          <ul class="text-sm text-cream/70 space-y-2 mb-5">
+            <li class="flex gap-2"><span class="text-taupe">✓</span>Material de estudio (bibliografía obligatoria)</li>
+            <li class="flex gap-2"><span class="text-taupe">✓</span>Acompañamiento y seguimiento personalizado</li>
+            <li class="flex gap-2"><span class="text-taupe">✓</span>Clases enfocadas en lo que necesitás para rendir</li>
+            <li class="flex gap-2"><span class="text-taupe">✓</span>Preguntas frecuentes de cada materia</li>
+            <li class="flex gap-2"><span class="text-taupe">✓</span>Clase final de repaso con práctica de oratoria</li>
+          </ul>
+          <a
+            href="https://wa.me/5493863507205?text=Hola,%20quisiera%20contratar%20el%20curso%20de%20EFIP%202."
+            class="block text-center bg-cream text-espresso font-serif italic py-3 rounded-full text-sm"
+            >Contratar</a
+          >
+        </div>
+
+        <div class="bg-cream text-espresso rounded-2xl p-5 reveal d3">
+          <h3 class="font-serif text-lg mb-0.5">Clases <span class="italic">particulares</span></h3>
+          <p class="text-xs text-espresso/50 mb-4">Personalizadas por hora</p>
+          <div class="mb-4">
+            <span class="text-xs text-espresso/50">Desde</span>
+            <span class="font-serif italic text-2xl block">$35.000</span>
+            <span class="text-xs text-espresso/50">la hora</span>
+          </div>
+          <ul class="text-sm text-espresso/70 space-y-2 mb-5">
+            <li class="flex gap-2"><span class="text-camel">✓</span>Horario a coordinar</li>
+            <li class="flex gap-2"><span class="text-camel">✓</span>Enfocado en temas débiles</li>
+          </ul>
+          <a
+            href="https://wa.me/5493863507205?text=Hola,%20quisiera%20contratar%20una%20clase%20particular."
+            class="block text-center bg-espresso text-cream font-serif italic py-3 rounded-full text-sm"
+            >Contratar</a
+          >
+        </div>
+
+        <div class="bg-cream ring-1 ring-espresso/15 text-espresso rounded-2xl p-5 reveal d3">
+          <h3 class="font-serif text-lg mb-0.5">Clases <span class="italic">grabadas</span></h3>
+          <p class="text-xs text-espresso/50 mb-4">Estudio a tu ritmo</p>
+          <div class="mb-4">
+            <span class="text-sm text-espresso/40 block">1 pago</span>
+            <span class="font-serif italic text-2xl block">$150.000</span>
+            <span class="text-xs text-camel">incluye material de estudio</span>
+          </div>
+          <ul class="text-sm text-espresso/70 space-y-2 mb-5">
+            <li class="flex gap-2"><span class="text-camel">✓</span>Clases grabadas</li>
+            <li class="flex gap-2"><span class="text-camel">✓</span>Acompañamiento activo del alumno</li>
+          </ul>
+          <a
+            href="https://wa.me/5493863507205?text=Hola,%20quisiera%20contratar%20las%20clases%20grabadas."
+            class="block text-center bg-espresso text-cream font-serif italic py-3 rounded-full text-sm"
+            >Contratar</a
+          >
+        </div>
+      </div>
+
+      <p class="mt-6 text-sm text-cream/60 lg:max-w-3xl lg:mx-auto">
+        <span class="text-taupe font-semibold">Cupos limitados.</span> Los cursos incluyen material de estudio
+        basado en bibliografía obligatoria, acompañamiento y seguimiento personalizado, y una clase final de
+        repaso para resolver dudas, repasar los temas clave y practicar la oratoria y exposición oral.
+      </p>
+
+      <div class="mt-8 lg:max-w-3xl lg:mx-auto">
+        <h3 class="font-serif text-base mb-3">Preguntas <span class="italic text-taupe">frecuentes</span></h3>
+        <div class="divide-y divide-cream/15 border-t border-b border-cream/15">
+          <details class="group py-3.5">
+            <summary class="flex justify-between items-center cursor-pointer text-sm font-medium"
+              >¿Puedo pagar en cuotas?<span class="text-taupe group-open:rotate-45 transition-transform"
+                >+</span
+              ></summary
+            >
+            <p class="text-sm text-cream/60 mt-2 leading-relaxed">
+              Sí. EFIP 1 se paga en 1 pago de $330.000 o 2 de $350.000; EFIP 2 en 1 pago de $370.000 o 2 de
+              $390.000. Coordinamos el medio de pago por WhatsApp.
+            </p>
+          </details>
+          <details class="group py-3.5">
+            <summary class="flex justify-between items-center cursor-pointer text-sm font-medium"
+              >¿Qué pasa si no llego a la fecha?<span
+                class="text-taupe group-open:rotate-45 transition-transform"
+                >+</span
+              ></summary
+            >
+            <p class="text-sm text-cream/60 mt-2 leading-relaxed">
+              Reprogramamos para la siguiente mesa sin costo. Además, el curso cierra con una clase final de
+              repaso para resolver dudas, repasar los temas clave y practicar oratoria y exposición oral.
+            </p>
+          </details>
+          <details class="group py-3.5">
+            <summary class="flex justify-between items-center cursor-pointer text-sm font-medium"
+              >¿Hay reembolso si no puedo continuar?<span
+                class="text-taupe group-open:rotate-45 transition-transform"
+                >+</span
+              ></summary
+            >
+            <p class="text-sm text-cream/60 mt-2 leading-relaxed">
+              Se evalúa caso por caso según las clases ya dictadas.
+            </p>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. VIDEO MÉTODO -->
+    <section class="px-5 py-10 lg:max-w-3xl lg:mx-auto lg:px-0 reveal">
+      <h2 class="font-serif text-2xl mb-5">Conocé nuestro <span class="italic text-camel">método</span></h2>
+      <!-- Video del método: <img src="..." alt="Video explicativo del método de estudio" loading="lazy" /> -->
+      <div class="photo-3 rounded-2xl aspect-video flex items-center justify-center relative">
+        <span class="absolute w-14 h-14 rounded-full bg-cream/90 flex items-center justify-center">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="#2B2016"><path d="M8 5v14l11-7z"></path></svg>
+        </span>
+      </div>
+    </section>
+
+    <!-- 5. AGRADECIMIENTOS -->
+    <section class="bg-brownmid text-cream px-5 py-10 reveal">
+      <h2 class="font-serif text-2xl mb-1">Agradecimientos de los <span class="italic text-taupe">aprobados</span></h2>
+      <p class="text-cream/50 text-sm mb-5">Capturas de alumnos que ya rindieron.</p>
+      <!-- Al reemplazar por imágenes reales: <img src="..." alt="Agradecimiento de alumno/a — EFIP 1" loading="lazy"> -->
+      <div class="flex gap-3 overflow-x-auto no-scrollbar snap-x-mandatory pb-1 -mx-5 px-5 lg:justify-center">
+        <div class="photo-1 snap-center shrink-0 w-36 h-52 rounded-2xl"></div>
+        <div class="photo-2 snap-center shrink-0 w-36 h-52 rounded-2xl"></div>
+        <div class="photo-3 snap-center shrink-0 w-36 h-52 rounded-2xl"></div>
+        <div class="photo-1 snap-center shrink-0 w-36 h-52 rounded-2xl"></div>
+      </div>
+    </section>
+
+    <!-- 6. TESTIMONIOS -->
+    <section class="px-5 py-10 reveal">
+      <h2 class="font-serif text-2xl mb-6">Lo que dicen <span class="italic text-camel">nuestros alumnos</span></h2>
+      <div class="space-y-6 lg:grid lg:grid-cols-2 lg:gap-6 lg:space-y-0">
+        <blockquote class="border-l-4 border-camel pl-4">
+          <p class="font-serif text-lg italic leading-snug mb-2">"[ placeholder — testimonio real de alumno/a ]"</p>
+          <cite class="text-sm text-espresso/50 not-italic">— Nombre, EFIP 1</cite>
+        </blockquote>
+        <blockquote class="border-l-4 border-camel pl-4">
+          <p class="font-serif text-lg italic leading-snug mb-2">"[ placeholder — segundo testimonio real ]"</p>
+          <cite class="text-sm text-espresso/50 not-italic">— Nombre, EFIP 2</cite>
+        </blockquote>
+      </div>
+    </section>
+
+    <!-- 7. CTA FINAL -->
+    <section class="photo-1 text-cream px-5 py-14 text-center lg:py-20 reveal">
+      <h2 class="font-serif text-2xl mb-3 lg:text-3xl">¿Listo/a para dar el <span class="italic text-taupe">último paso</span>?</h2>
+      <p class="text-cream/70 text-sm mb-6">Tu título de abogado/a está más cerca que nunca.</p>
+      <a
+        href="https://wa.me/5493863507205?text=Hola,%20quiero%20inscribirme%20en%20el%20curso%20para%20EFIP."
+        class="inline-block bg-cream text-espresso font-serif italic px-7 py-3.5 rounded-full text-sm"
+        >Quiero inscribirme</a
+      >
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="px-5 py-8 pb-28 text-xs text-espresso/50 flex justify-between lg:justify-center lg:gap-8 lg:py-10">
+      <p>© 2026 Ale Abogadas Efip</p>
+      <a href="https://wa.me/5493863507205" class="text-camel">WhatsApp</a>
+    </footer>
+
+    <!-- BARRA FIJA INFERIOR -->
+    <div
+      class="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-cream border-t border-espresso/10 px-5 py-3 flex items-center justify-between z-40 lg:hidden"
+    >
+      <div>
+        <p class="text-[11px] text-espresso/50 leading-tight">Desde</p>
+        <p class="font-serif italic text-base leading-tight">$35.000</p>
+      </div>
+      <a
+        href="https://wa.me/5493863507205"
+        class="bg-espresso hover:bg-brownmid transition-colors text-cream font-serif italic text-sm px-6 py-3 rounded-full"
+        >Escribir por WhatsApp</a
+      >
+    </div>
+  </div>
+</Layout>
