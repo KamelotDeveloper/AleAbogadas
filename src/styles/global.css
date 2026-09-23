@@ -1,11 +1,15 @@
 @import "tailwindcss";
 
 @theme {
-  --color-espresso: #2B2016;
-  --color-brownmid: #5C4433;
-  --color-camel: #8B6F52;
-  --color-taupe: #B5A697;
-  --color-cream: #F5EFE6;
+  /* Editorial beige/camel palette */
+  --color-espresso: #1E1D2E;
+  --color-brownmid: #F4E3D3;
+  --color-camel: #A87F42;
+  --color-taupe: #4A4A4A;
+  --color-cream: #F7EFE5;
+  --color-wooddark: #8C6A3B;
+  --color-cardline: #E8D9C6;
+  --color-badgebg: #F2D9BE;
 
   --font-serif: "Playfair Display", serif;
   --font-sans: "Inter", sans-serif;
@@ -37,15 +41,15 @@ html {
 }
 
 .photo-1 {
-  background: linear-gradient(155deg, #6B5240 0%, #4A3527 55%, #2B2016 100%);
+  background: linear-gradient(155deg, #C9A974 0%, #8C6A3B 55%, #3A2A1A 100%);
 }
 
 .photo-2 {
-  background: linear-gradient(160deg, #8B7660 0%, #5C4433 60%, #382A1E 100%);
+  background: linear-gradient(160deg, #E8D9C6 0%, #D8BE9A 60%, #C9A974 100%);
 }
 
 .photo-3 {
-  background: linear-gradient(145deg, #A08865 0%, #6B5240 55%, #3A2C1F 100%);
+  background: linear-gradient(145deg, #DFC9A8 0%, #B58F5C 55%, #A87F42 100%);
 }
 
 /* Reveal on scroll — hidden only when JS is active; no-JS keeps content visible */
