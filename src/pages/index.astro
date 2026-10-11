@@ -1,5 +1,20 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import MetodoCarousel from '../components/MetodoCarousel.astro';
+import VideoLightbox from '../components/VideoLightbox.astro';
+
+const metodoSlides = [
+  {
+    src: '/media/metodo-ale.mp4',
+    poster: '/media/metodo-ale-poster.webp',
+    title: 'Conocé el método',
+  },
+  {
+    src: '/media/metodo-b.mp4',
+    poster: '/media/metodo-b-poster.webp',
+    title: 'Así explicamos cada materia',
+  },
+];
 ---
 
 <Layout>
@@ -22,14 +37,29 @@ import Layout from '../layouts/Layout.astro';
     <!-- 1. HERO — mobile: foto con overlay / desktop: split 2 columnas (un solo h1) -->
     <section class="pt-20 px-5 pb-8 lg:pt-28 lg:pb-12">
       <div class="grid grid-cols-1 lg:grid-cols-2 lg:gap-12">
-        <!-- Foto de portada: <img src="..." alt="Clase de preparación EFIP" loading="lazy" /> -->
+        <!-- Portada: foto fija. El video se movió al carrusel de "Conocé nuestro método". -->
         <div
-          class="photo-1 rounded-2xl aspect-[4/5] overflow-hidden col-start-1 row-start-1 lg:col-start-2 lg:row-start-1 lg:aspect-auto"
-        ></div>
+          class="hero-media rounded-2xl aspect-[4/5] overflow-hidden col-start-1 row-start-1 lg:col-start-2 lg:row-start-1 lg:aspect-[4/5]"
+        >
+          <img
+            src="/media/abogadas.webp"
+            alt="Las dos abogadas de Ale Abogadas Efip juntas en el estudio"
+            width="1086"
+            height="1448"
+            fetchpriority="high"
+            decoding="async"
+            class="absolute inset-0 w-full h-full object-cover object-[center_28%]"
+          />
+          <!-- Scrim solo en mobile: allá el h1 se superpone a la foto.
+               En desktop el texto vive en la columna izquierda y oscurecer sería ruido. -->
+          <div class="hero-scrim lg:hidden"></div>
+        </div>
 
-        <!-- Texto (un solo h1): mobile superpuesto abajo de la foto; desktop columna izquierda -->
+        <!-- Texto (un solo h1): mobile superpuesto abajo de la foto; desktop columna izquierda.
+             `relative` es obligatorio: .hero-media también es posicionado, y sin esto el
+             video se pinta encima del texto (z-index auto ordena por orden de pintado). -->
         <div
-          class="col-start-1 row-start-1 flex flex-col justify-end p-6 lg:col-start-1 lg:row-start-1 lg:justify-center lg:p-0 reveal"
+          class="relative col-start-1 row-start-1 flex flex-col justify-end p-6 lg:col-start-1 lg:row-start-1 lg:justify-center lg:p-0 reveal"
         >
           <p class="eyebrow uppercase text-cream/60 text-[11px] font-semibold mb-3 lg:text-camel">
             Preparación EFIP
@@ -298,13 +328,36 @@ import Layout from '../layouts/Layout.astro';
     </section>
 
     <!-- 4. VIDEO MÉTODO -->
-    <section class="px-5 py-10 lg:max-w-3xl lg:mx-auto lg:px-0 reveal">
-      <h2 class="font-serif text-2xl mb-5">Conocé nuestro <span class="italic text-camel">método</span></h2>
-      <!-- Video del método: <img src="..." alt="Video explicativo del método de estudio" loading="lazy" /> -->
-      <div class="photo-3 rounded-2xl aspect-video flex items-center justify-center relative">
-        <span class="absolute w-14 h-14 rounded-full bg-cream/90 flex items-center justify-center">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="#1E1D2E"><path d="M8 5v14l11-7z"></path></svg>
-        </span>
+    <section class="py-10 reveal">
+      <div class="px-5">
+        <h2 class="font-serif text-2xl mb-1">Conocé nuestro <span class="italic text-camel">método</span></h2>
+        <p class="text-espresso/50 text-sm mb-6">Así explicamos cada materia antes del examen.</p>
+      </div>
+      <!-- Carrusel: el track sangra a los bordes para que se vea la card vecina -->
+      <div class="-mx-5 px-5 lg:mx-0 lg:px-0">
+        <MetodoCarousel slides={metodoSlides} />
+      </div>
+    </section>
+
+    <!-- Player: rendered OUTSIDE the .reveal section on purpose — a transformed
+         ancestor turns `position: fixed` into "relative to that section". -->
+    <VideoLightbox slides={metodoSlides} />
+
+    <!-- 5. LAS ABOGADAS — statement de texto: la foto ya está en el hero -->
+    <section class="bg-brownmid text-espresso px-5 py-12 reveal">
+      <div class="lg:max-w-2xl lg:mx-auto text-center">
+        <p class="eyebrow uppercase text-camel text-[11px] font-semibold mb-3">Las abogadas</p>
+        <h2 class="font-serif text-2xl mb-5">
+          Dos abogadas, <span class="italic text-camel">un mismo método</span>
+        </h2>
+        <p class="text-espresso/70 text-sm leading-relaxed mb-4">
+          No somos una plataforma ni un curso en video: somos dos abogadas que preparamos EFIP 1 y 2
+          con un método propio, clases con dinámica grupal y un repaso completo de oralidad.
+        </p>
+        <p class="text-espresso/70 text-sm leading-relaxed">
+          Acompañamos a cada alumno hasta el día del examen, porque aprobar no es promedio: es no
+          dejar a nadie atrás.
+        </p>
       </div>
     </section>
 

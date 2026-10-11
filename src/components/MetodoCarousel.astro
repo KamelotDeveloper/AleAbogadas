@@ -1,0 +1,173 @@
+---
+// The player itself is rendered by VideoLightbox on the page, outside this
+// component: a fixed overlay nested in a transformed ancestor loses its
+// viewport anchor. Only the Slide contract is shared from here.
+export type { Slide } from './VideoLightbox.astro';
+
+const { slides } = Astro.props as { slides: Slide[] };
+---
+
+<div data-carousel>
+  <div class="car-track no-scrollbar" data-track>
+    {
+      slides.map((slide, i) => (
+        <button
+          type="button"
+          class:list={['car-card', i === 0 && 'is-active']}
+          data-card
+          data-index={i}
+          aria-label={`Abrir el video ${i + 1}: ${slide.title}`}
+        >
+          <video
+            data-src={slide.src}
+            poster={slide.poster}
+            muted
+            loop
+            playsinline
+            preload="none"
+            aria-hidden="true"
+            tabindex="-1"
+          />
+
+          {/* Decorative: the whole card is the button, the badge is only the affordance. */}
+          <span class="car-play absolute inset-0 flex items-center justify-center" aria-hidden="true">
+            <span class="w-14 h-14 rounded-full bg-cream/90 flex items-center justify-center shadow-lg">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="#1E1D2E">
+                <path d="M8 5v14l11-7z" />
+              </svg>
+            </span>
+          </span>
+        </button>
+      ))
+    }
+  </div>
+
+  {
+    slides.length > 1 && (
+      <div class="flex items-center justify-center gap-2" data-dots>
+        {slides.map((_, i) => (
+          <button
+            type="button"
+            class:list={['car-dot', i === 0 && 'is-active']}
+            data-dot
+            data-goto={i}
+            aria-label={`Ver video ${i + 1}`}
+          />
+        ))}
+      </div>
+    )
+  }
+</div>
+
+<script>
+  const root = document.querySelector('[data-carousel]');
+  if (root) {
+    const track = root.querySelector('[data-track]') as HTMLElement | null;
+    const cards = Array.from(root.querySelectorAll('[data-card]')) as HTMLElement[];
+    const dots = Array.from(root.querySelectorAll('[data-dot]')) as HTMLElement[];
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    let activeIndex = 0;
+    let lightboxOpen = false;
+
+    const playCard = (card: HTMLElement) => {
+      const video = card.querySelector('video') as HTMLVideoElement | null;
+      if (!video) return;
+
+      // Lazy assignment: el src solo existe para la card activa.
+      if (!video.getAttribute('src') && video.dataset.src) {
+        video.setAttribute('src', video.dataset.src);
+        video.load();
+      }
+
+      // iOS/Safari resetea el estado muted cuando el src se asigna por JS:
+      // hay que setear la PROPIEDAD, no confiar solo en el atributo.
+      video.muted = true;
+      video.playsInline = true;
+
+      const attempt = video.play();
+      if (attempt && typeof attempt.then === 'function') {
+        attempt
+          .then(() => card.classList.add('is-playing'))
+          .catch((err: Error) => {
+            // Autoplay rechazado: el poster y el boton de play quedan visibles,
+            // y el motivo queda en consola en vez de tragarselo.
+            card.classList.remove('is-playing');
+            console.warn('[carrusel] autoplay bloqueado:', err.name, err.message);
+          });
+      }
+    };
+
+    const pauseCard = (card: HTMLElement) => {
+      const video = card.querySelector('video') as HTMLVideoElement | null;
+      if (video) video.pause();
+      card.classList.remove('is-playing');
+    };
+
+    const activate = (index: number) => {
+      activeIndex = index;
+      cards.forEach((card, i) => {
+        card.classList.toggle('is-active', i === index);
+
+        if (i === index) {
+          // With reduced motion we do NOT autoplay: the user decides with a tap.
+          if (!reduceMotion && !lightboxOpen) playCard(card);
+        } else {
+          pauseCard(card);
+        }
+      });
+
+      dots.forEach((dot, i) => dot.classList.toggle('is-active', i === index));
+    };
+
+    // Tapping any card hands the video over to the lightbox player instead of
+    // toggling the muted teaser. Dots keep their own "scroll to that card" job.
+    cards.forEach((card, i) => {
+      card.addEventListener('click', () => {
+        document.dispatchEvent(
+          new CustomEvent('video-lightbox:request', { detail: { index: i, trigger: card } })
+        );
+      });
+    });
+
+    document.addEventListener('video-lightbox:opened', () => {
+      lightboxOpen = true;
+      cards.forEach(pauseCard);
+    });
+
+    document.addEventListener('video-lightbox:closed', () => {
+      lightboxOpen = false;
+      // Re-enter the carousel's own state machine so the teaser resumes wherever
+      // the user left the track, instead of resuming every video at once.
+      activate(activeIndex);
+    });
+
+    if (!reduceMotion) activate(activeIndex);
+    else cards[0]?.classList.add('is-active');
+
+    if ('IntersectionObserver' in window && track) {
+      // root: el scroller — no el viewport — decide que card esta centrada.
+      const io = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (!entry.isIntersecting) return;
+            const index = Number((entry.target as HTMLElement).dataset.index);
+            if (!Number.isNaN(index)) activate(index);
+          });
+        },
+        { root: track, threshold: 0.6 }
+      );
+      cards.forEach((card) => io.observe(card));
+    }
+
+    dots.forEach((dot, i) => {
+      dot.addEventListener('click', () => {
+        cards[i]?.scrollIntoView({
+          behavior: reduceMotion ? 'auto' : 'smooth',
+          block: 'nearest',
+          inline: 'center',
+        });
+      });
+    });
+  }
+</script>

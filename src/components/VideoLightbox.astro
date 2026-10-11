@@ -1,0 +1,264 @@
+---
+export interface Slide {
+  /** Path to the MP4 in /public. */
+  src: string;
+  /** Poster frame in WebP: shown instantly while the video buffers. */
+  poster: string;
+  /** Short neutral label displayed above the player. */
+  title: string;
+}
+
+const { slides } = Astro.props as { slides: Slide[] };
+const hasMultiple = slides.length > 1;
+---
+
+<div
+  class="vl-root fixed inset-0 z-50 grid place-items-center"
+  data-lightbox
+  data-lightbox-slides={JSON.stringify(slides)}
+  inert
+>
+  <div class="absolute inset-0 bg-espresso/92" data-lightbox-backdrop></div>
+
+  <div
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="vl-title"
+    data-lightbox-panel
+    class="vl-panel relative z-10 mx-auto flex h-full w-full flex-col p-4 sm:h-auto sm:w-auto sm:max-h-full sm:rounded-2xl sm:bg-espresso/95 sm:p-5 sm:shadow-2xl sm:ring-1 sm:ring-cream/15"
+  >
+    <div class="flex items-start gap-3 pb-3 sm:pt-0">
+      <div class="min-w-0 flex-1">
+        <p id="vl-title" class="font-serif text-base leading-snug text-cream sm:text-lg" data-lightbox-title>
+        </p>
+        <p class="eyebrow text-camel mt-1 text-[11px]" data-lightbox-counter></p>
+      </div>
+      <button
+        type="button"
+        data-lightbox-close
+        aria-label="Cerrar video"
+        class="-mt-1 shrink-0 rounded-full bg-cream/10 p-2 text-cream transition-colors hover:bg-cream/25 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-camel"
+      >
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+          <path d="M18 6L6 18"></path>
+          <path d="M6 6l12 12"></path>
+        </svg>
+      </button>
+    </div>
+
+    <div class="flex min-h-0 flex-1 items-center justify-center">
+      <video
+        data-lightbox-video
+        controls
+        playsinline
+        preload="auto"
+        class="h-[min(76dvh,calc(100dvh_-_9rem))] max-h-full w-auto max-w-full aspect-[9/16] object-contain sm:h-[min(80dvh,calc(100dvh_-_11rem))]"
+      >
+      </video>
+    </div>
+
+    {
+      hasMultiple && (
+        <div class="flex items-center justify-center gap-4 pt-3">
+          <button
+            type="button"
+            data-lightbox-prev
+            aria-label="Ver el video anterior"
+            class="flex items-center justify-center gap-1.5 rounded-full bg-cream/10 px-4 py-2 text-cream transition-colors hover:bg-cream/25 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-camel"
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M15 18l-6-6 6-6"></path>
+            </svg>
+            <span class="text-xs">Anterior</span>
+          </button>
+          <button
+            type="button"
+            data-lightbox-next
+            aria-label="Ver el video siguiente"
+            class="flex items-center justify-center gap-1.5 rounded-full bg-cream/10 px-4 py-2 text-cream transition-colors hover:bg-cream/25 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-camel"
+          >
+            <span class="text-xs">Siguiente</span>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M9 6l6 6-6 6"></path>
+            </svg>
+          </button>
+        </div>
+      )
+    }
+  </div>
+</div>
+
+<script>
+  interface Slide {
+    src: string;
+    poster: string;
+    title: string;
+  }
+
+  // Only elements inside the dialog are reachable; `video[controls]` is included
+  // because Chromium exposes the media element as a tab stop.
+  const FOCUSABLE =
+    'button:not([disabled]), [href], video[controls], [tabindex]:not([tabindex="-1"])';
+
+  const root = document.querySelector<HTMLElement>('[data-lightbox]');
+
+  let slides: Slide[] = [];
+  try {
+    slides = JSON.parse(root?.dataset.lightboxSlides || '[]') as Slide[];
+  } catch {
+    slides = [];
+  }
+
+  // The player is optional chrome: pages without a [data-lightbox] element must
+  // not throw, so everything below stays behind this guard.
+  if (root && slides.length > 0) {
+    const panel = root.querySelector<HTMLElement>('[data-lightbox-panel]');
+    const backdrop = root.querySelector('[data-lightbox-backdrop]');
+    const video = root.querySelector<HTMLVideoElement>('[data-lightbox-video]');
+    const titleEl = root.querySelector('[data-lightbox-title]');
+    const counterEl = root.querySelector('[data-lightbox-counter]');
+    const closeBtn = root.querySelector<HTMLElement>('[data-lightbox-close]');
+    const prevBtn = root.querySelector<HTMLElement>('[data-lightbox-prev]');
+    const nextBtn = root.querySelector<HTMLElement>('[data-lightbox-next]');
+
+    let current = 0;
+    let opener: HTMLElement | null = null;
+    let lockedScrollY = 0;
+    let savedBodyStyle: Record<string, string> | null = null;
+
+    const render = (index: number, autoplay: boolean) => {
+      const slide = slides[index];
+      if (!slide || !video) return;
+
+      video.pause();
+      video.poster = slide.poster;
+      video.src = slide.src;
+      video.load();
+
+      // Safari can reset the muted state when the source is swapped, and the
+      // attribute alone is not honoured either: the PROPERTY has to be set after
+      // the assignment. Sound is intentional here — the open is a user gesture.
+      video.muted = false;
+      video.playsInline = true;
+      // volume is deliberately NOT touched: it starts at 1 on a fresh element and
+      // after that it is the user's own setting, which prev/next must not stomp.
+
+      if (titleEl) titleEl.textContent = slide.title;
+      if (counterEl) counterEl.textContent = `${index + 1} / ${slides.length}`;
+
+      if (autoplay) {
+        const attempt = video.play();
+        if (attempt && typeof attempt.then === 'function') {
+          attempt.catch((err: Error) => {
+            // Poster + native controls stay usable, so a rejected play is not fatal.
+            console.warn('[lightbox] play blocked:', err.name, err.message);
+          });
+        }
+      }
+    };
+
+    const lockScroll = () => {
+      const body = document.body;
+      // Snapshot every inline value we touch so closing restores the page exactly,
+      // even if something else already set one of them.
+      savedBodyStyle = {
+        position: body.style.position,
+        top: body.style.top,
+        left: body.style.left,
+        right: body.style.right,
+        width: body.style.width,
+        overflow: body.style.overflow,
+      };
+
+      lockedScrollY = window.scrollY;
+      body.style.position = 'fixed';
+      body.style.top = `-${lockedScrollY}px`;
+      body.style.left = '0';
+      body.style.right = '0';
+      body.style.width = '100%';
+      body.style.overflow = 'hidden';
+    };
+
+    const unlockScroll = () => {
+      if (!savedBodyStyle) return;
+      const body = document.body;
+      Object.entries(savedBodyStyle).forEach(([prop, value]) => {
+        body.style.setProperty(prop, value);
+      });
+      savedBodyStyle = null;
+      window.scrollTo(0, lockedScrollY);
+    };
+
+    const open = (index: number, trigger: HTMLElement | null) => {
+      current = Math.min(Math.max(index, 0), slides.length - 1);
+      opener = trigger;
+      lockScroll();
+      root.inert = false;
+      root.classList.add('is-open');
+      render(current, true);
+      closeBtn?.focus();
+      document.dispatchEvent(new CustomEvent('video-lightbox:opened'));
+    };
+
+    const close = () => {
+      video?.pause();
+      root.classList.remove('is-open');
+      root.inert = true;
+      unlockScroll();
+      // preventScroll matters: a plain focus() scrolls the originating card back
+      // into view and silently overrides the scroll restore above.
+      opener?.focus({ preventScroll: true });
+      opener = null;
+      document.dispatchEvent(new CustomEvent('video-lightbox:closed'));
+    };
+
+    const step = (delta: number) => {
+      if (slides.length < 2) return;
+      current = (current + delta + slides.length) % slides.length;
+      render(current, true);
+    };
+
+    closeBtn?.addEventListener('click', close);
+    prevBtn?.addEventListener('click', () => step(-1));
+    nextBtn?.addEventListener('click', () => step(1));
+
+    // Clicking the backdrop closes. The guard matters: a click on the video or on
+    // its native control bar also bubbles up here, but with a different target —
+    // without this check, scrubbing or pressing play would dismiss the player.
+    root.addEventListener('click', (event: MouseEvent) => {
+      const target = event.target as Node | null;
+      if (target === root || target === backdrop) close();
+    });
+
+    root.addEventListener('keydown', (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        close();
+        return;
+      }
+
+      if (event.key !== 'Tab' || !panel) return;
+
+      const items = Array.from(panel.querySelectorAll<HTMLElement>(FOCUSABLE)).filter(
+        (el) => el.offsetParent !== null || el === document.activeElement
+      );
+      if (items.length === 0) return;
+
+      const first = items[0] as HTMLElement;
+      const last = items[items.length - 1] as HTMLElement;
+
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    });
+
+    document.addEventListener('video-lightbox:request', (event: Event) => {
+      const detail = (event as CustomEvent<{ index?: number; trigger?: HTMLElement }>).detail;
+      open(detail?.index ?? 0, detail?.trigger ?? null);
+    });
+  }
+</script>

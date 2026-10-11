@@ -28,3 +28,7 @@ pnpm-debug.log*
 .atl/
 AGENT.md
 skills-lock.json
+
+# video original material (source of truth, never deployed — 160 MB of HEVC)
+media-originales/
+tmp-media/

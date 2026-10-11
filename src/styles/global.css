@@ -67,3 +67,178 @@ html {
 .js .reveal.d1 { transition-delay: 0.1s; }
 .js .reveal.d2 { transition-delay: 0.2s; }
 .js .reveal.d3 { transition-delay: 0.3s; }
+
+/* ── Hero video ─────────────────────────────────────────── */
+.hero-media {
+  position: relative;
+  overflow: hidden;
+}
+
+/* El video del hero tiene subtítulos quemados en el tercio inferior: el scrim
+   tiene que ganarle en contraste al h1, no solo oscurecer un poco. */
+.hero-scrim {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    to top,
+    rgb(30 29 46 / 0.94) 0%,
+    rgb(30 29 46 / 0.86) 18%,
+    rgb(30 29 46 / 0.6) 36%,
+    rgb(30 29 46 / 0.22) 52%,
+    rgb(30 29 46 / 0) 66%
+  );
+}
+
+/* ── Method carousel ────────────────────────────────────── */
+.car-track {
+  display: flex;
+  gap: 0.75rem;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  padding: 0.5rem 0 0.75rem;
+}
+
+.car-track::-webkit-scrollbar {
+  display: none;
+}
+
+.car-card {
+  position: relative;
+  flex: 0 0 76%;
+  scroll-snap-align: center;
+  border-radius: 1.25rem;
+  overflow: hidden;
+  aspect-ratio: 9 / 16;
+  background: var(--color-brownmid);
+  opacity: 0.5;
+  transform: scale(0.94);
+  transition:
+    opacity 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.car-card.is-active {
+  opacity: 1;
+  transform: scale(1);
+  box-shadow: 0 20px 44px -20px rgb(30 29 46 / 0.5);
+}
+
+/* The card IS the trigger that opens the lightbox, so the element is a real
+   <button>: reset the UA chrome but keep the look defined above. */
+button.car-card {
+  display: block;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: var(--color-brownmid);
+  color: inherit;
+  font: inherit;
+  text-align: inherit;
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+button.car-card:focus-visible {
+  outline: 2px solid var(--color-camel);
+  outline-offset: 3px;
+}
+
+.car-card video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* El badge se oculta cuando el video REALMENTE esta reproduciendo, no cuando la
+   card esta activa: si el autoplay falla o hay reduced-motion, el usuario necesita
+   ver y pulsar el boton. */
+.car-play {
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.car-card.is-playing .car-play {
+  opacity: 0;
+  transform: scale(0.8);
+  pointer-events: none;
+}
+
+.car-dot {
+  height: 6px;
+  width: 6px;
+  border-radius: 999px;
+  background: var(--color-camel);
+  opacity: 0.35;
+  transition:
+    width 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.45s ease;
+}
+
+.car-dot.is-active {
+  width: 26px;
+  opacity: 1;
+}
+
+/* ── Video lightbox ──────────────────────────────────────── */
+/* Visibility (not display:none) so the fade can play in both directions while
+   `visibility: hidden` still removes the dialog from tab order and a11y tree. */
+.vl-root {
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 0.28s ease,
+    visibility 0s linear 0.28s;
+}
+
+.vl-root.is-open {
+  opacity: 1;
+  visibility: visible;
+  transition:
+    opacity 0.28s ease,
+    visibility 0s;
+}
+
+.vl-panel {
+  transform: translateY(14px) scale(0.985);
+  transition: transform 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.vl-root.is-open .vl-panel {
+  transform: none;
+}
+
+@media (min-width: 1024px) {
+  .car-card {
+    flex-basis: calc(50% - 0.375rem);
+  }
+}
+
+/* Motion-sensitive visitors get state changes without movement */
+@media (prefers-reduced-motion: reduce) {
+  .car-card,
+  .car-dot,
+  .car-play,
+  .vl-root,
+  .vl-panel {
+    transition-duration: 0.01ms;
+  }
+
+  .car-card {
+    transform: none;
+  }
+
+  .car-card.is-active {
+    transform: none;
+  }
+
+  .vl-panel {
+    transform: none;
+  }
+}
