@@ -67,7 +67,14 @@ const { slides } = Astro.props as { slides: Slide[] };
     const dots = Array.from(root.querySelectorAll('[data-dot]')) as HTMLElement[];
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    let activeIndex = 0;
+    // Cuanto del card tiene que verse dentro del track para contar como visible.
+    const VISIBLE_RATIO = 0.6;
+
+    // Toda card suficientemente visible esta activa, no solo una: el track puede
+    // mostrar dos peers a la vez (desktop) o una seleccion a la vez (mobile). El
+    // set arranca con la card 0, que es la que el HTML ya marca al server-side.
+    const visible = new Set<number>([0]);
+
     let lightboxOpen = false;
 
     const playCard = (card: HTMLElement) => {
@@ -104,12 +111,15 @@ const { slides } = Astro.props as { slides: Slide[] };
       card.classList.remove('is-playing');
     };
 
-    const activate = (index: number) => {
-      activeIndex = index;
+    // Un unico lugar que decide el estado de todas las cards a partir del set:
+    // el observer, el lightbox y el arranque pasan todos por aca.
+    const sync = () => {
       cards.forEach((card, i) => {
-        card.classList.toggle('is-active', i === index);
+        const isVisible = visible.has(i);
 
-        if (i === index) {
+        card.classList.toggle('is-active', isVisible);
+
+        if (isVisible) {
           // With reduced motion we do NOT autoplay: the user decides with a tap.
           if (!reduceMotion && !lightboxOpen) playCard(card);
         } else {
@@ -117,7 +127,7 @@ const { slides } = Astro.props as { slides: Slide[] };
         }
       });
 
-      dots.forEach((dot, i) => dot.classList.toggle('is-active', i === index));
+      dots.forEach((dot, i) => dot.classList.toggle('is-active', visible.has(i)));
     };
 
     // Tapping any card hands the video over to the lightbox player instead of
@@ -139,23 +149,32 @@ const { slides } = Astro.props as { slides: Slide[] };
       lightboxOpen = false;
       // Re-enter the carousel's own state machine so the teaser resumes wherever
       // the user left the track, instead of resuming every video at once.
-      activate(activeIndex);
+      sync();
     });
 
-    if (!reduceMotion) activate(activeIndex);
-    else cards[0]?.classList.add('is-active');
+    sync();
 
     if ('IntersectionObserver' in window && track) {
-      // root: el scroller — no el viewport — decide que card esta centrada.
+      // root: el scroller — no el viewport — decide que cards estan visibles.
       const io = new IntersectionObserver(
         (entries) => {
           entries.forEach((entry) => {
-            if (!entry.isIntersecting) return;
             const index = Number((entry.target as HTMLElement).dataset.index);
-            if (!Number.isNaN(index)) activate(index);
+            if (Number.isNaN(index)) return;
+
+            // Se lee intersectionRatio y no isIntersecting: una card puede seguir
+            // intersectando el track y aun asi quedarse afuera del umbral, y ese
+            // cruce tiene que apagar la card.
+            if (entry.intersectionRatio >= VISIBLE_RATIO) visible.add(index);
+            else visible.delete(index);
           });
+
+          sync();
         },
-        { root: track, threshold: 0.6 }
+        // Array de umbrales: dispara al entrar Y al salir de la zona visible. Con
+        // un unico number el observer solo avisaba de los cruces y las cards se
+        // quedaban pegadas en el ultimo estado que las puse en activo.
+        { root: track, threshold: [0, VISIBLE_RATIO] }
       );
       cards.forEach((card) => io.observe(card));
     }
